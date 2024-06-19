@@ -1,47 +1,39 @@
-import requests
+import argparse
 import dns.resolver
-import sys
+import concurrent.futures
 
-def get_subdomains(domain, wordlist):
-    subdomains = []
-    for subdomain in wordlist:
-        sub = f"{subdomain}.{domain}"
-        try:
-            answers = dns.resolver.resolve(sub)
-            for rdata in answers:
-                subdomains.append(sub)
-                print(f"[+] Found: {sub} -> {rdata}")
-        except dns.resolver.NXDOMAIN:
-            pass
-        except dns.resolver.NoAnswer:
-            pass
-        except dns.resolver.LifetimeTimeout:
-            pass
-    return subdomains
-
-def main(domain, wordlist_file):
+def resolve_subdomain(subdomain, domain):
     try:
-        with open(wordlist_file, 'r') as file:
-            wordlist = file.read().splitlines()
-    except FileNotFoundError:
-        print(f"Wordlist file {wordlist_file} not found.")
-        sys.exit(1)
+        full_domain = f"{subdomain}.{domain}"
+        answers = dns.resolver.resolve(full_domain, 'A')
+        return full_domain
+    except dns.resolver.NXDOMAIN:
+        return None
+    except dns.resolver.NoAnswer:
+        return None
+    except dns.resolver.Timeout:
+        return None
+    except dns.exception.DNSException:
+        return None
 
-    print(f"Starting subdomain enumeration for {domain}")
-    subdomains = get_subdomains(domain, wordlist)
+def main(file, domain):
+    with open(file, 'r') as f:
+        subdomains = [line.strip() for line in f]
 
-    if subdomains:
-        print("\nSubdomains found:")
-        for sub in subdomains:
-            print(sub)
-    else:
-        print("No subdomains found.")
+    print(f"Enumerating subdomains for {domain}...")
+    
+    with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        future_to_subdomain = {executor.submit(resolve_subdomain, subdomain, domain): subdomain for subdomain in subdomains}
+        
+        for future in concurrent.futures.as_completed(future_to_subdomain):
+            result = future.result()
+            if result:
+                print(result)
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} <domain> <wordlist>")
-        sys.exit(1)
-
-    domain = sys.argv[1]
-    wordlist_file = sys.argv[2]
-    main(domain, wordlist_file)
+    parser = argparse.ArgumentParser(description="Subdomain Enumerator Tool")
+    parser.add_argument('-f', '--file', required=True, help="File containing subdomains")
+    parser.add_argument('-d', '--domain', required=True, help="Target domain name")
+    args = parser.parse_args()
+    
+    main(args.file, args.domain)
