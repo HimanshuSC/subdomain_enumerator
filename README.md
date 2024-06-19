@@ -1,7 +1,3 @@
-# Disclaimer:
-
-This tool is intended for legal purposes only
-
 # subdomain_enumerator:
 
 This powerful tool, crafted in Python, is designed to discover subdomains associated with your domain. By utilizing this tool, you can proactively safeguard your online presence by thoroughly enumerating all potential subdomains, ensuring no vulnerabilities go unnoticed.
@@ -45,4 +41,10 @@ mail.zoom.com
 api.zoom.com
 
 test.zoom.com
+
 support.zoom.com
+
+
+# Disclaimer:
+
+This tool should not be used for unethical purpose.
