@@ -9,33 +9,22 @@ This tool requires a custom list of subdomains which can be found online.
 
 Prerequisite:
 
-sudo apt install python3 -y 
+$ sudo apt install python3 -y 
 
-pip install requests dnspython
+$ pip install requests dnspython
 
-wget 
+$ wget https://github.com/HimanshuSC/subdomain_enumerator/blob/main/subdomain_enum.py
 
+$ Create or download a file containing subdomains.
 
 Example 
 
-$ python subdomain_enum.py example.com subdomains.txt
+$ python subdomain_enum.py -d example.com -f subdomains.txt
 
 
 python subdomain_enum.py zoom.com sub.txt
 
 Starting subdomain enumeration for zoom.com
-
-[+] Found: www.zoom.com -> 172.64.150.28
-
-[+] Found: www.zoom.com -> 104.18.37.228
-
-[+] Found: mail.zoom.com -> 134.224.13.143
-
-[+] Found: api.zoom.com -> 170.114.0.11
-
-[+] Found: test.zoom.com -> 170.114.0.11
-
-[+] Found: support.zoom.com -> 149.96.145.29
 
 
 Subdomains found:
