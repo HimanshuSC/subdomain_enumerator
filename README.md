@@ -7,10 +7,18 @@ Usage :
 
 This tool requires a custom list of subdomains which can be found online.
 
+Prerequisite:
+
+sudo apt install python3 -y 
+
+pip install requests dnspython
+
+wget 
+
 
 Example 
 
-$ python subdomain_enumerator.py example.com subdomains.txt
+$ python subdomain_enum.py example.com subdomains.txt
 
 
 python subdomain_enum.py zoom.com sub.txt
